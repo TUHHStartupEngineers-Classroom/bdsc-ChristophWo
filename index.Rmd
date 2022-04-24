@@ -1,5 +1,5 @@
 ---
-title: "MyLabJournal"
+title: "Christoph Wolter Lab Journal"
 output: html_document
 ---
 
@@ -13,7 +13,7 @@ This is a template example for lab journaling. Students in the data science cour
 
 ## How to use
 
-1. Accept the assignment and get your own github repo.
+1. Accepted the assignment and get your own github repo.
 
 2. Blog/journal what you are doing in R, by editing the `.Rmd` files. 
 
