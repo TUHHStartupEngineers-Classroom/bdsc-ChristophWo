@@ -7,7 +7,7 @@ output: html_document
 
 ![](images/logo.png)
 
-# **My Lab Journal**
+# **Christoph Wolter Lab Journal**
 
 This is a template example for lab journaling. Students in the data science courses at the Institute of Entrepreneurship will use this template to learn R for business analytics. Students can replace this text as they wish.
 
@@ -17,6 +17,8 @@ This is a template example for lab journaling. Students in the data science cour
 
 2. Blog/journal what you are doing in R, by editing the `.Rmd` files. 
 
-3. See the links page for lots of helpful links on learning R.
+3. Saw the links page for lots of helpful links on learning R.
 
-4. Change everything to make it your own.
+4. Change everything to make it my own.
+
+5.Will have a lot of work...
