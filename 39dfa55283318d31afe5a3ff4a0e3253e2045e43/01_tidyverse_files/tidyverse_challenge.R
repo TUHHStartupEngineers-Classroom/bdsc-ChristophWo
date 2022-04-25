@@ -1,27 +1,8 @@
----
-title: "01 Intro to the tidyverse"
-author: "Joschka Schwarz"
-date: "2021-04"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    df_print: paged
-    collapsed: false
-    number_sections: true
-    toc_depth: 3
-    code_folding: hide
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
-```
-
 # Data Science at TUHH ------------------------------------------------------
 # SALES ANALYSIS ----
 
-## 1.0 Load libraries
-```{r}
+# 1.0 Load libraries ----
+
 library(tidyverse)
 #  library(tibble)    --> is a modern re-imagining of the data frame
 #  library(readr)     --> provides a fast and friendly way to read rectangular data like csv
@@ -40,11 +21,10 @@ library(tidyverse)
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 
-```
-## 2.0 Importing Files
-```{r}
 # Excel Files
 library(readxl)
+
+# 2.0 Importing Files ----
 
 # A good convention is to use the file name and suffix it with tbl for the data structure tibble
 bikes_tbl      <- read_excel("01_tidyverse_files/ds_data/01_bike_sales/01_raw_data/bikes.xlsx")
@@ -52,10 +32,9 @@ orderlines_tbl <- read_excel("01_tidyverse_files/ds_data/01_bike_sales/01_raw_da
 
 # Not necessary for this analysis, but for the sake of completeness
 bikeshops_tbl  <- read_excel("01_tidyverse_files/ds_data/01_bike_sales/01_raw_data/bikeshops.xlsx")
-```
+# 3.0 Examining Data ----
 
-## 3.0 Examining Data
-```{r}
+# 3.0 Examining Data ----
 # Method 1: Print it to the console
 orderlines_tbl
 # A tibble: 15,644 x 7
@@ -77,41 +56,104 @@ orderlines_tbl
 
 # Method 3: glimpse() function. Especially helpful for wide data (data with many columns)
 glimpse(orderlines_tbl)
-```
-## 4.0 Joining Data
-```{r}
+## Rows: 15,644
+## Columns: 7
+## $ ...1        <chr> "1", "2", "3", "4", "5", "6", "7", "8", "…
+## $ order.id    <dbl> 1, 1, 2, 2, 3, 3, 3, 3, 3, 4, 5, 5, 5, 5,…
+## $ order.line  <dbl> 1, 2, 1, 2, 1, 2, 3, 4, 5, 1, 1, 2, 3, 4,…
+## $ order.date  <dttm> 2015-01-07, 2015-01-07, 2015-01-10, 2015…
+## $ customer.id <dbl> 2, 2, 10, 10, 6, 6, 6, 6, 6, 22, 8, 8, 8,…
+## $ product.id  <dbl> 2681, 2411, 2629, 2137, 2367, 1973, 2422,…
+## $ quantity    <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1,…
+
+# 4.0 Joining Data ----
 # by automatically detecting a common column, if any ...
-#left_join(orderlines_tbl, bikes_tbl)
+left_join(orderlines_tbl, bikes_tbl)
 ## Error: `by` must be supplied when `x` and `y` have no common variables.
 
 # If the data has no common column name, you can provide each column name in the "by" argument. For example, by = c("a" = "b") will match x.a to y.b. The order of the columns has to match the order of the tibbles).
 left_join(orderlines_tbl, bikes_tbl, by = c("product.id" = "bike.id"))
+## # A tibble: 15,644 x 15
+##    ...1  order.id order.line order.date          customer.id
+##    <chr>    <dbl>      <dbl> <dttm>                    <dbl>
+##  1 1            1          1 2015-01-07 00:00:00           2
+##  2 2            1          2 2015-01-07 00:00:00           2
+##  3 3            2          1 2015-01-10 00:00:00          10
+##  4 4            2          2 2015-01-10 00:00:00          10
+##  5 5            3          1 2015-01-10 00:00:00           6
+##  6 6            3          2 2015-01-10 00:00:00           6
+##  7 7            3          3 2015-01-10 00:00:00           6
+##  8 8            3          4 2015-01-10 00:00:00           6
+##  9 9            3          5 2015-01-10 00:00:00           6
+## 10 10           4          1 2015-01-11 00:00:00          22
+## # … with 15,634 more rows, and 10 more variables:
+## #   product.id <dbl>, quantity <dbl>, model <chr>,
+## #   model.year <dbl>, frame.material <chr>, weight <dbl>,
+## #   price <dbl>, category <chr>, gender <chr>, url <chr>
 
 # Chaining commands with the pipe and assigning it to order_items_joined_tbl
-
 bike_orderlines_joined_tbl <- orderlines_tbl %>%
   left_join(bikes_tbl, by = c("product.id" = "bike.id"))%>%
   left_join(bikeshops_tbl, by = c("customer.id" = "bikeshop.id"))
 
-# Examine the results with glimpse()
 
+
+# Examine the results with glimpse()
 bike_orderlines_joined_tbl %>% glimpse()
-```
-## 5.0 Wrangling Data
-```{r}
+## Rows: 15,644
+## Columns: 19
+## $ ...1           <chr> "1", "2", "3", "4", "5", "6", "7", …
+## $ order.id       <dbl> 1, 1, 2, 2, 3, 3, 3, 3, 3, 4, 5, 5,…
+## $ order.line     <dbl> 1, 2, 1, 2, 1, 2, 3, 4, 5, 1, 1, 2,…
+## $ order.date     <dttm> 2015-01-07, 2015-01-07, 2015-01-10…
+## $ customer.id    <dbl> 2, 2, 10, 10, 6, 6, 6, 6, 6, 22, 8,…
+## $ product.id     <dbl> 2681, 2411, 2629, 2137, 2367, 1973,…
+## $ quantity       <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2,…
+## $ model          <chr> "Spectral CF 7 WMN", "Ultimate CF S…
+## $ model.year     <dbl> 2021, 2020, 2021, 2019, 2020, 2020,…
+## $ frame.material <chr> "carbon", "carbon", "carbon", "carb…
+## $ weight         <dbl> 13.80, 7.44, 14.06, 8.80, 11.50, 8.…
+## $ price          <dbl> 3119, 5359, 2729, 1749, 1219, 1359,…
+## $ category       <chr> "Mountain - Trail - Spectral", "Roa…
+## $ gender         <chr> "female", "unisex", "unisex", "unis…
+## $ url            <chr> "https://www.canyon.com/en-de/mount…
+## $ name           <chr> "AlexandeRad", "AlexandeRad", "WITT…
+## $ location       <chr> "Hamburg, Hamburg", "Hamburg, Hambu…
+## $ lat            <dbl> 53.57532, 53.57532, 53.07379, 53.07…
+## $ lng            <dbl> 10.015340, 10.015340, 8.826754, 8.8…
+
+
+# 5.0 Wrangling Data ----
 bike_orderlines_joined_tbl %>% 
   select(category) %>%
   filter(str_detect(category, "^Mountain")) %>% 
   unique()
-```
-### 5.1 Wrangling Data
-All actions are chained with the pipe already. You can perform each step separately and use glimpse() or View() to validate your code. Store the result in a variable at the end of the steps.
-```{r}
+## # A tibble: 10 x 1
+##    category                         
+##    <chr>                            
+##  1 Mountain - Trail - Spectral      
+##  2 Mountain - Trail - Neuron        
+##  3 Mountain - Dirt Jump - Stitched  
+##  4 Mountain - Enduro - Torque       
+##  5 Mountain - Trail - Grand Canyon  
+##  6 Mountain - Cross-Country - Lux   
+##  7 Mountain - Enduro - Strive       
+##  8 Mountain - Downhill - Sender     
+##  9 Mountain - Fat Bikes - Dude      
+## 10 Mountain - Cross-Country - Exceed
+
+# 5.1 Wrangling Data ----
+# All actions are chained with the pipe already. You can perform each step separately and use glimpse() or View() to validate your code. Store the result in a variable at the end of the steps.
 bike_orderlines_wrangled_tbl <- bike_orderlines_joined_tbl %>%
   # 5.1 Separate category name
   separate(col    = category,
            into   = c("category.1", "category.2", "category.3"),
            sep    = " - ") %>%
+  
+  #5.1.1 Seperate state & city
+  separate(col    = location,
+           into   = c("city", "state"),
+           sep    = ", ") %>%
   
   # 5.2 Add the total price (price * quantity) 
   # Add a column to a tibble that uses a formula-style calculation of other columns
@@ -140,164 +182,11 @@ bike_orderlines_wrangled_tbl <- bike_orderlines_joined_tbl %>%
   rename(bikeshop = name) %>%
   set_names(names(.) %>% str_replace_all("\\.", "_"))
 
-```
-## 6.1 Sales by Year
+# 6.0 Business Insights ----
+# 6.1 Sales by Year ----
 
-
-### Step 1 - Manipulate
-```{r}
 library(lubridate)
-sales_by_year_tbl <- bike_orderlines_wrangled_tbl %>%
-  
-  # Select columns
-  select(order_date, total_price) %>%
-  
-  # Add year column
-  mutate(year = year(order_date)) %>%
-  
-  # Grouping by year and summarizing sales
-  group_by(year) %>% 
-  summarize(sales = sum(total_price)) %>%
-  
-  # Optional: Add a column that turns the numbers into a currency format 
-  # (makes it in the plot optically more appealing)
-  # mutate(sales_text = scales::dollar(sales)) <- Works for dollar values
-  mutate(sales_text = scales::dollar(sales, big.mark = ".", 
-                                     decimal.mark = ",", 
-                                     prefix = "", 
-                                     suffix = " €"))
-
-sales_by_year_tbl
-```
-### Step 2 - Visualize
-```{r}
-sales_by_year_tbl %>%
-  
-  # Setup canvas with the columns year (x-axis) and sales (y-axis)
-  ggplot(aes(x = year, y = sales)) +
-  
-  # Geometries
-  geom_col(fill = "#2DC6D6") + # Use geom_col for a bar plot
-  geom_label(aes(label = sales_text)) + # Adding labels to the bars
-  geom_smooth(method = "lm", se = FALSE) + # Adding a trendline
-  
-  # Formatting
-  # scale_y_continuous(labels = scales::dollar) + # Change the y-axis. 
-  # Again, we have to adjust it for euro values
-  scale_y_continuous(labels = scales::dollar_format(big.mark = ".", 
-                                                    decimal.mark = ",", 
-                                                    prefix = "", 
-                                                    suffix = " €")) +
-  labs(
-    title    = "Revenue by year",
-    subtitle = "Upward Trend",
-    x = "", # Override defaults for x and y
-    y = "Revenue"
-  )
-```
-
-## 6.2 Sales by Year and Category
-#### Step 1 - Manipulate
-```{r}
-sales_by_year_cat_1_tbl <- bike_orderlines_wrangled_tbl %>%
-  
-  # Select columns and add a year
-  select(order_date, total_price, category_1) %>%
-  mutate(year = year(order_date)) %>%
-  
-  # Group by and summarize year and main catgegory
-  group_by(year, category_1) %>%
-  summarise(sales = sum(total_price)) %>%
-  ungroup() %>%
-  
-  # Format $ Text
-  mutate(sales_text = scales::dollar(sales, big.mark = ".", 
-                                     decimal.mark = ",", 
-                                     prefix = "", 
-                                     suffix = " €"))
-
-sales_by_year_cat_1_tbl  
-```
-### Step 2 - Visualize
-```{r}
-sales_by_year_cat_1_tbl %>%
-  
-  # Set up x, y, fill
-  ggplot(aes(x = year, y = sales, fill = category_1)) +
-  
-  # Geometries
-  geom_col() + # Run up to here to get a stacked bar plot
-  
-  # Facet
-  facet_wrap(~ category_1) +
-  
-  # Formatting
-  scale_y_continuous(labels = scales::dollar_format(big.mark = ".", 
-                                                    decimal.mark = ",", 
-                                                    prefix = "", 
-                                                    suffix = " €")) +
-  labs(
-    title = "Revenue by year and main category",
-    subtitle = "Each product category has an upward trend",
-    fill = "Main category" # Changes the legend name
-  )
-```
-
-## 7.0 tidyverse challenge
-
-## 7.1 Wrangling Data
-```{r}
-bike_orderlines_joined_tbl %>% 
-  select(category) %>%
-  filter(str_detect(category, "^Mountain")) %>% 
-  unique()
-```
-## 7.2 Wrangling Data
-```{r}
-# All actions are chained with the pipe already. You can perform each step separately and use glimpse() or View() to validate your code. Store the result in a variable at the end of the steps.
-bike_orderlines_wrangled_tbl <- bike_orderlines_joined_tbl %>%
-## 7.3 Separate category name
-  separate(col    = category,
-           into   = c("category.1", "category.2", "category.3"),
-           sep    = " - ") %>%
-  
-  ###7.3.1 Seperate state & city
-  separate(col    = location,
-           into   = c("city", "state"),
-           sep    = ", ") %>%
-  
-  # 7.3.2 Add the total price (price * quantity) 
-  # Add a column to a tibble that uses a formula-style calculation of other columns
-  mutate(total.price = price * quantity) %>%
-  
-  # 7.3.3 Optional: Reorganize. Using select to grab or remove unnecessary columns
-  # 7.3.4 by exact column name
-  select(-...1, -gender) %>%
-  
-  # 7.3.5 by a pattern
-  # You can use the select_helpers to define patterns. 
-  # Type ?ends_with and click on Select helpers in the documentation
-  select(-ends_with(".id")) %>%
-  
-  # 7.3.6 Actually we need the column "order.id". Let's bind it back to the data
-  bind_cols(bike_orderlines_joined_tbl %>% select(order.id)) %>% 
-  
-  # 7.3.7 You can reorder the data by selecting the columns in your desired order.
-  # You can use select_helpers like contains() or everything()
-  select(order.id, contains("order"), contains("model"), contains("category"),
-         price, quantity, total.price,
-         everything()) %>%
-  
-  # 7.3.8 Rename columns because we actually wanted underscores instead of the dots
-  # (one at the time vs. multiple at once)
-  rename(bikeshop = name) %>%
-  set_names(names(.) %>% str_replace_all("\\.", "_"))
-```
-## 7.4 Business Insights
-### 7.4.1 Sales by Year
-### Step 1 - Manipulate
-```{r}
-library(lubridate)
+# Step 1 - Manipulate
 sales_by_state_tbl <- bike_orderlines_wrangled_tbl %>%
   
   # Select columns
@@ -316,9 +205,8 @@ sales_by_state_tbl <- bike_orderlines_wrangled_tbl %>%
                                      prefix = "", 
                                      suffix = " €"))
 
-```
-### Step 2 - Visualize
-```{r plot, fig.width=10, fig.height=7}
+
+# Step 2 - Visualize
 sales_by_state_tbl %>%
   
   # Setup canvas with the columns year (x-axis) and sales (y-axis)
@@ -338,16 +226,15 @@ sales_by_state_tbl %>%
                                                     prefix = "", 
                                                     suffix = " €")) +
   labs(
-    title    = "Revenue by state",
+    title    = "Revenue by year",
     subtitle = "Upward Trend",
     x = "", # Override defaults for x and y
     y = "Revenue"
   )
 
-```
-## 7.5 Sales by Year and Category ----
-### Step 1 - Manipulate
-```{r}
+
+# 6.2 Sales by Year and Category ----
+# Step 1 - Manipulate
 sales_by_state_cat_1_tbl <- bike_orderlines_wrangled_tbl %>%
   
   # Select columns and add a year
@@ -366,9 +253,22 @@ sales_by_state_cat_1_tbl <- bike_orderlines_wrangled_tbl %>%
                                      suffix = " €"))
 
 sales_by_state_cat_1_tbl  
-```
-### Step 2 - Visualize
-```{r plot2, fig.width=10, fig.height=7}
+## # A tibble: 25 x 4
+##     year category_1      sales sales_text 
+##    <dbl> <chr>           <dbl> <chr>      
+##  1  2015 E-Bikes       1599048 1.599.048 €
+##  2  2015 Gravel         663025 663.025 €  
+##  3  2015 Hybrid / City  502512 502.512 €  
+##  4  2015 Mountain      3254289 3.254.289 €
+##  5  2015 Road          3911408 3.911.408 €
+##  6  2016 E-Bikes       1916469 1.916.469 €
+##  7  2016 Gravel         768794 768.794 €  
+##  8  2016 Hybrid / City  512346 512.346 €  
+##  9  2016 Mountain      3288733 3.288.733 €
+## 10  2016 Road          4244165 4.244.165 €
+## # … with 15 more rows
+
+# Step 2 - Visualize
 sales_by_state_cat_1_tbl %>%
   
   # Set up x, y, fill
@@ -389,8 +289,16 @@ sales_by_state_cat_1_tbl %>%
                                                     prefix = "", 
                                                     suffix = " €")) +
   labs(
-    title = "Revenue by year and state",
-    fill = "state" # Changes the legend name
+    title = "Revenue by year and main category",
+    subtitle = "Each product category has an upward trend",
+    fill = "Main category" # Changes the legend name
   )
 
-```
+
+# 7.0 Writing Files ----
+
+# 7.1 Excel ----
+
+# 7.2 CSV ----
+
+# 7.3 RDS ----
