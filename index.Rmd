@@ -22,3 +22,13 @@ This is a template example for lab journaling. Students in the data science cour
 4. Change everything to make it my own.
 
 5. Will have a lot of work...
+
+
+Here’s some code
+```{r echo=TRUE}
+roll_prob <- function(x = 1:6,size = 1){
+probabilities_vector <- c(1/10, 1/10, 1/10, 1/10, 1/10, 1/2)
+sample(x, size, replace = FALSE, prob = probabilities_vector)
+}
+
+```
