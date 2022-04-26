@@ -1,23 +1,3 @@
----
-title: "02 Data Acqusition"
-date: "2021-04"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    df_print: paged
-    collapsed: false
-    number_sections: true
-    toc_depth: 3
-    code_folding: hide
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
-```
-## Working with Spotify API
-
-```{r}
 library(lubridate)
 library(spotifyr)
 library(knitr)
@@ -36,7 +16,6 @@ last_played_tbl<-get_my_recently_played(limit = 10) %>%
  # kable() #showstable in console
 mutate(artist.name)
 
-
 last_played_tbl
 ##last_played_tbl
 ##track.name    artist.name        track.album.name           played_at
@@ -54,5 +33,4 @@ last_played_tbl
 last_played_tbl%>%
 ggplot(x=played_at, aes(played_at, track.name, colour = artist.name)) + 
   geom_point()
-
-```
+  
