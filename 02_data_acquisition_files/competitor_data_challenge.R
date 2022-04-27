@@ -10,24 +10,48 @@ library(xopen)     # Quickly opening URLs
 library(jsonlite)  # converts JSON files to R objects
 library(glue)      # concatenate strings
 library(stringi)   # character string/text processing
+library(purrr)
+library(unglue)
+
 
 # 1.1 COLLECT PRODUCT FAMILIES ----
 
-url_home          <- "https://www.rosebikes.de/"
+url_home          <- "https://www.rosebikes.de/fahrr%C3%A4der/gravel"
+html_home         <- read_html(url_home)
 #xopen(url_home) # Open links directly from RStudio to inspect them
 
-# Read in the HTML for the entire webpage
-html_home         <- read_html(url_home)
-
-# Web scrape the ids for the families
-bike_family_tbl <- html_home %>%
+# 01. Get available bike categories ----
+bike_category_tbl <- html_home %>%
   
   # Get the nodes for the families ...
-  html_nodes(css = ".js-navigationDrawer__list--secondary") %>%
-  # ...and extract the information of the id attribute
-  html_attr('id') %>%
+  html_nodes(css = "h4.basic-headline__title") |> #("element is h4 .class")
+  html_text() |> 
+  as_tibble()
   
-  # Remove the product families Gear and Outlet and Woman 
-  # (because the female bikes are also listed with the others)
-  discard(.p = ~stringr::str_detect(.x,"WMN|WOMEN|GEAR|OUTLET")) %>%
+
+bike_price_tbl <- html_home %>%
+# Get the nodes for the prices ...
+html_nodes(css = ".catalog-category-bikes__price-title") |> #(.class)
+  html_text() |>
+  as_tibble()
   
+  num_ratings <- html %>% 
+  html_nodes(css = ".imdbRating > strong") %>% 
+  html_attr('titl') %>% 
+  # Extract the numbers and remove the comma to make it numeric values
+  stringr::str_extract("(?<=based on ).*(?=\ user ratings)" ) %>% 
+  stringr::str_replace_all(pattern = ",", replacement = "") %>% 
+  as.numeric()  
+  
+
+  cleaned<-gsub("[^0.-9,-]","",bike_price_tbl)
+  cleaned<-str_remove_all(bike_price_tbl,",00")
+  
+  bike_price_cleaned<-as_tibble(cleaned)
+  bike_price_cleaned_s<-x%>%separate(col    = value,
+                    into   = c("1", "2", "3","4"),
+                    sep    = ",") 
+  t<-t(bike_price_cleaned_s)
+  
+
+bike_data_joined_tbl <- cbind(bike_category_tbl, t)
