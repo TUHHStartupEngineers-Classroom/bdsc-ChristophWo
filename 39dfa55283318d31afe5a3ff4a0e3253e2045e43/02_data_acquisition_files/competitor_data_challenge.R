@@ -48,4 +48,4 @@ html_nodes(css = ".catalog-category-bikes__price-title") |> #(.class)
   
 
 bike_data_joined_tbl <- cbind(bike_category_tbl, bike_price_cleaned_s)
-colnames(bike_data_joined_tbl)<-c("Bike","Price")
+colnames(bike_data_joined_tbl)<-c("Bike","Price [€]")
