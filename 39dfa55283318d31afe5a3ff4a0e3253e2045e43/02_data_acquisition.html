@@ -13,7 +13,7 @@
 
 <title>02 Data Acqusition</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -407,7 +407,7 @@ mutate(artist.name)
 last_played_tbl</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["track.name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["artist.name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["track.album.name"],"name":[3],"type":["chr"],"align":["left"]},{"label":["played_at"],"name":[4],"type":["dttm"],"align":["right"]}],"data":[{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-04-26 13:40:26.974","_rn_":"1"},{"1":"Young Hearts","2":"Aardvark Lies","3":"Street Life","4":"2022-04-26 13:37:25.336","_rn_":"2"},{"1":"La Cuenta","2":"Aguacates","3":"Verdes","4":"2022-04-26 13:34:57.863","_rn_":"3"},{"1":"Same","2":"Bulletkampsh","3":"Best Deep House, Vol. 1","4":"2022-04-26 13:32:17.417","_rn_":"4"},{"1":"Diamond Pizzle","2":"Barefoot Creek","3":"Sunscapes","4":"2022-04-26 13:31:08.889","_rn_":"5"},{"1":"Saber Algo","2":"CHAPARREX","3":"Movimientos","4":"2022-04-26 13:27:22.402","_rn_":"6"},{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-04-26 13:24:27.697","_rn_":"7"},{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-04-26 13:23:17.585","_rn_":"8"},{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-04-26 13:22:07.432","_rn_":"9"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["track.name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["artist.name"],"name":[2],"type":["chr"],"align":["left"]},{"label":["track.album.name"],"name":[3],"type":["chr"],"align":["left"]},{"label":["played_at"],"name":[4],"type":["dttm"],"align":["right"]}],"data":[{"1":"Just Dance","2":"Lady Gaga","3":"The Fame","4":"2022-05-02 11:37:32.661","_rn_":"1"},{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-05-02 11:24:13.282","_rn_":"2"},{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-04-26 13:40:26.974","_rn_":"3"},{"1":"Young Hearts","2":"Aardvark Lies","3":"Street Life","4":"2022-04-26 13:37:25.336","_rn_":"4"},{"1":"La Cuenta","2":"Aguacates","3":"Verdes","4":"2022-04-26 13:34:57.863","_rn_":"5"},{"1":"Same","2":"Bulletkampsh","3":"Best Deep House, Vol. 1","4":"2022-04-26 13:32:17.417","_rn_":"6"},{"1":"Diamond Pizzle","2":"Barefoot Creek","3":"Sunscapes","4":"2022-04-26 13:31:08.889","_rn_":"7"},{"1":"Saber Algo","2":"CHAPARREX","3":"Movimientos","4":"2022-04-26 13:27:22.402","_rn_":"8"},{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-04-26 13:24:27.697","_rn_":"9"},{"1":"Hans is real","2":"Hans Must","3":"Hans is real","4":"2022-04-26 13:23:17.585","_rn_":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code>##last_played_tbl
@@ -428,7 +428,8 @@ ggplot(x=played_at, aes(played_at, track.name, colour = artist.name)) +
   geom_point()</code></pre>
 <p><img src="02_data_acquisition_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 #2 Collecting competitor data from ROSE bikes</p>
-<p># WEBSCRAPING</p>
+<div id="webscraping" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> WEBSCRAPING</h1>
 <p>#1.0 LIBRARIES</p>
 <pre class="r"><code>library(tidyverse) # Main Package - Loads dplyr, purrr, etc.
 library(rvest)     # HTML Hacking &amp; Web Scraping
@@ -475,8 +476,9 @@ colnames(bike_data_joined_tbl)&lt;-c(&quot;Bike&quot;,&quot;Price[€]&quot;)</c
 <pre class="r"><code>bike_data_joined_tbl</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Bike"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Price"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"BACKROAD+","2":"5.199","_rn_":"1"},{"1":"BACKROAD AL","2":"1.999","_rn_":"2"},{"1":"BACKROAD","2":"3.149","_rn_":"3"},{"1":"BACKROAD LIMITED","2":"5.599","_rn_":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Bike"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Price[€]"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"BACKROAD+","2":"5.199","_rn_":"1"},{"1":"BACKROAD AL","2":"1.999","_rn_":"2"},{"1":"BACKROAD","2":"3.149","_rn_":"3"},{"1":"BACKROAD LIMITED","2":"5.599","_rn_":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
+</div>
 </div>
 
 
