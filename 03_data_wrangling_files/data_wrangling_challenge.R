@@ -71,14 +71,12 @@ patent_tbl <- left_join( patent_tbl, uspc_tbl, by = c("id" = "patent_id"))
 
 patent_tbl <- patent_tbl %>% 
   select(id,country,date,num_claims,type.y,organization,mainclass_id) %>%
-  filter(type.y %in% c(2)) %>% #filter by type.y =2= US Company
+  filter(type.y %in% c(2))%>% #filter by type.y =2= US Company
+  separate(col  = date, #seperate date into year,month and day
+           into = c("year", "month", "day"),
+           sep  = "-", remove = FALSE) %>%
+  filter(year %in% c(2014)) #filter by year =2014
 
-separate(col  = date, #seperate date into year,month and day
-         into = c("year", "month", "day"),
-         sep  = "-", remove = FALSE)
-
-patent_tbl <- patent_tbl %>% 
-  filter(year %in% c(2014))#filter by year =2014
 
 #patent_tbl_test_part <- patent_tbl %>%  #sort by xerox company patents (used to evaluate sorting and counting)
  # filter(organization %in% c("Xerox Corporation"))
