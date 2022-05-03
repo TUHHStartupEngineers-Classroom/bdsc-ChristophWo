@@ -1,5 +1,6 @@
 library(vroom)
-
+library(tidyverse)
+library(dplyr)
 
 #getting patent data
 col_types_patent <- list(
@@ -64,7 +65,29 @@ uspc_tbl <- vroom(
 )
 
 
-patent_joined <- left_join( patent_tbl, patent_assignee_tbl, by = c("id" = "patent_id"))
-patent_joined <- left_join( patent_joined, assignee_tbl, by = c("assignee_id" = "id"))
-patent_joined <- left_join( patent_joined, uspc_tbl, by = c("id" = "patent_id"))
-#new_table<-select(continent,date) #for data visualization
+patent_tbl <- left_join( patent_tbl, patent_assignee_tbl, by = c("id" = "patent_id"))
+patent_tbl <- left_join( patent_tbl, assignee_tbl, by = c("assignee_id" = "id"))
+patent_tbl <- left_join( patent_tbl, uspc_tbl, by = c("id" = "patent_id"))
+
+patent_tbl <- patent_tbl %>% 
+  select(id,country,date,num_claims,type.y,organization,mainclass_id) %>%
+  filter(type.y %in% c(2)) %>% #filter by type.y =2= US Company
+
+separate(col  = date, #seperate date into year,month and day
+         into = c("year", "month", "day"),
+         sep  = "-", remove = FALSE)
+
+patent_tbl <- patent_tbl %>% 
+  filter(year %in% c(2014))#filter by year =2014
+
+#patent_tbl_test_part <- patent_tbl %>%  #sort by xerox company patents (used to evaluate sorting and counting)
+ # filter(organization %in% c("Xerox Corporation"))
+
+company_patent_count <- patent_tbl %>%   #count patents grouped by company sorted by ascending patent count
+  group_by(organization) %>%
+  summarise(
+    count = n()
+  ) %>%
+  ungroup()%>%
+  arrange(desc(count))%>%
+  slice(1:10)
