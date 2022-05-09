@@ -1,24 +1,6 @@
----
-title: "04 Data Visualization"
-date: "2021-04"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    df_print: paged
-    collapsed: false
-    number_sections: true
-    toc_depth: 3
-    code_folding: hide
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
-```
-
-#1 Data Visualization Challenge
+#visualization try 2
 #Challenge 1
-```{r}
+
 library(tidyverse)
 library(ggrepel)
 library(ggplot2)
@@ -46,9 +28,8 @@ covid_data_selected_tbl%>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   scale_color_manual(values = c("#1b98e0", "#353435","#FF0000", "#00FF00","#FF00FF"))
   
-```
+
 #Challenge 2
-```{r}
 
 covid_data_selected_tbl <- covid_data_tbl  %>% 
   select(continent,location,date,total_cases, total_deaths,population)
@@ -80,4 +61,3 @@ gg <- gg + theme_map()
 gg <- gg + theme(plot.margin=margin(20,20,20,20))
 gg <- gg + theme(legend.position=c(0.85, 0.2))
 gg
-```

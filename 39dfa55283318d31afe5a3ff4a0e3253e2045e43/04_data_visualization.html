@@ -384,65 +384,66 @@ div.tocify {
 </div>
 
 
-<p><strong>IMPORTANT:</strong> You can delete everything in here and
-start fresh. You might want to start by not deleting anything above this
-line until you know what that stuff is doing.</p>
-<p>This is an <code>.Rmd</code> file. It is plain text with special
-features. Any time you write just like this, it will be compiled to
-normal text in the website. If you put a # in front of your text, it
-will create a top level-header.</p>
-<div id="my-first-post" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> My first post</h1>
-<p>Last compiled: 2022-05-04</p>
-<p>Notice that whatever you define as a top level header, automatically
-gets put into the table of contents bar on the left.</p>
-<div id="second-level-header" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Second level
-header</h2>
-<p>You can add more headers by adding more hashtags. These won’t be put
-into the table of contents</p>
-<div id="third-level-header" class="section level3" number="1.1.1">
-<h3><span class="header-section-number">1.1.1</span> third level
-header</h3>
-<p>Here’s an even lower level header</p>
-</div>
-</div>
-</div>
-<div id="my-second-post-note-the-order" class="section level1"
-number="2">
-<h1><span class="header-section-number">2</span> My second post (note
-the order)</h1>
-<p>Last compiled: 2022-05-04</p>
-<p>I’m writing this tutorial going from the top down. And, this is how
-it will be printed. So, notice the second post is second in the list. If
-you want your most recent post to be at the top, then make a new post
-starting at the top. If you want the oldest first, do, then keep adding
-to the bottom</p>
-</div>
-<div id="adding-r-stuff" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Adding R stuff</h1>
-<p>So far this is just a blog where you can write in plain text and
-serve your writing to a webpage. One of the main purposes of this lab
-journal is to record your progress learning R. The reason I am asking
-you to use this process is because you can both make a website, and a
-lab journal, and learn R all in R-studio. This makes everything really
-convenient and in the same place.</p>
-<p>So, let’s say you are learning how to make a histogram in R. For
-example, maybe you want to sample 100 numbers from a normal distribution
-with mean = 0, and standard deviation = 1, and then you want to plot a
-histogram. You can do this right here by using an r code block, like
-this:</p>
-<pre class="r"><code>samples &lt;- rnorm(100, mean=0, sd=1)
-hist(samples)</code></pre>
-<p><img src="04_data_visualization_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>When you knit this R Markdown document, you will see that the
-histogram is printed to the page, along with the R code. This document
-can be set up to hide the R code in the webpage, just delete the comment
-(hashtag) from the cold folding option in the yaml header up top. For
-purposes of letting yourself see the code, and me see the code, best to
-keep it the way that it is. You’ll learn that all of these things and
-more can be customized in each R code block.</p>
-</div>
+<p>#1 Data Visualization Challenge #Challenge 1</p>
+<pre class="r"><code>library(tidyverse)
+library(ggrepel)
+library(ggplot2)
+library(maps)
+library(maptools)
+library(mapdata)
+library(ggthemes)
+library(tibble)
+library(viridis)
+library(mapproj)
+
+
+covid_data_tbl &lt;- read_csv(&quot;https://covid.ourworldindata.org/data/owid-covid-data.csv&quot;)
+
+covid_data_selected_tbl &lt;- covid_data_tbl  %&gt;% 
+  select(continent,location,date,total_cases)
+
+covid_data_selected_tbl &lt;- covid_data_selected_tbl %&gt;% filter(location == c(&quot;Germany&quot;,&quot;France&quot;,&quot;United Kingdom&quot;,&quot;United States&quot;,&quot;Spain&quot;)) #filter by date
+
+
+covid_data_selected_tbl%&gt;%
+  ggplot(x=date, aes(date, total_cases, colour = location,geom_label(&quot;Challenge 1&quot;))) + 
+  geom_line()+
+  scale_x_date(breaks = &quot;1 month&quot;, date_labels = &quot;%b &#39;%y&quot;) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_color_manual(values = c(&quot;#1b98e0&quot;, &quot;#353435&quot;,&quot;#FF0000&quot;, &quot;#00FF00&quot;,&quot;#FF00FF&quot;))</code></pre>
+<p><img src="04_data_visualization_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+#Challenge 2</p>
+<pre class="r"><code>covid_data_selected_tbl &lt;- covid_data_tbl  %&gt;% 
+  select(continent,location,date,total_cases, total_deaths,population)
+
+covid_data_selected_tbl &lt;- covid_data_selected_tbl %&gt;%
+  mutate(mortality_rate = (total_deaths/population)*100)
+
+covid_data_selected_tbl &lt;- covid_data_selected_tbl %&gt;% filter(date == c(&quot;2022-05-07&quot;)) #filter by date
+covid_data_selected_tbl &lt;- covid_data_selected_tbl %&gt;%  rename(&quot;region&quot; = location)
+covid_data_selected_tbl &lt;- covid_data_selected_tbl %&gt;%  select(region,mortality_rate)
+
+plot_data &lt;- data_frame(region=unique(world$region))
+plot_data &lt;- left_join( plot_data, covid_data_selected_tbl, by = c(&quot;region&quot; = &quot;region&quot;))
+
+world &lt;- map_data(&quot;world&quot;)
+
+
+gg &lt;- ggplot()
+gg &lt;- gg + geom_map(data=world, map=world,
+                    aes(long, lat, map_id=region),
+                    color=&quot;#2b2b2b&quot;, fill=NA, size=0.15)
+gg &lt;- gg + geom_map(data=plot_data, map=world,
+                    aes(fill=mortality_rate,
+                        map_id=region),
+                    color=&quot;white&quot;, size=0.15)
+gg &lt;- gg + scale_fill_viridis(name=&quot;Mortality Rate&quot;)
+gg &lt;- gg + coord_map(&quot;polyconic&quot;)
+gg &lt;- gg + theme_map()
+gg &lt;- gg + theme(plot.margin=margin(20,20,20,20))
+gg &lt;- gg + theme(legend.position=c(0.85, 0.2))
+gg</code></pre>
+<p><img src="04_data_visualization_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 
 
 

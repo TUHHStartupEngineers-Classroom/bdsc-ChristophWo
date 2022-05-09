@@ -18,6 +18,19 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 
 # First question
 ```{r}
+answer_1 <- data_frame(Company=c("International Business Machines Corporation",
+                         "Microsoft Corporation",
+                         "QUALCOMM Incorporated",
+                         "Google Inc.",
+                         "Apple Inc.",
+                         "AT&T INTELLECTUAL PROPERTY I, L.P",
+                         "General Electric Company",
+                         "Intel Corporation",
+                         "GM Global Technology Operations LLC",
+                         "Hewlett-Packard Development Company, L.P."),
+                          Patents=c(20680,8126,7837,6827,6090,5277,5028,4567,4208,4047))
+answer_1
+
 #organization                                count
 #<chr>                                       <int>
 #1 International Business Machines Corporation 20680
@@ -33,6 +46,18 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 ```
 # Second question
 ```{r}
+answer_2 <- data_frame(Company=c("International Business Machines Corporation",
+                         "Microsoft Corporation",
+                         "QUALCOMM Incorporated",
+                         "Google Inc.",
+                         "Apple Inc.",
+                         "Intel Corporation",
+                         "AT&T INTELLECTUAL PROPERTY I, L.P",
+                         "Hewlett-Packard Development Company, L.P.",
+                         "General Electric Company",
+                         "Broadcom Corporation"),
+                          Patents=c(1990,878,639,630,568,445,427,378,375,372))
+answer_2
 #organization                                count
 #<chr>                                       <int>
 #1 International Business Machines Corporation  1990
@@ -48,6 +73,10 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 ```
 # Third question
 ```{r}
+answer_3 <- data_frame(Patent_main_class=c("NA","455","709","370","707","257"),
+                          Patents=c(6058,4868,4367,4354,3321,3188))
+answer_3
+
 #mainclass_id count
 #<chr>        <int>
 #  1 NA          6058
